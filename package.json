@@ -1,0 +1,30 @@
+{
+  "name": "imoocz",
+  "version": "1.0.0",
+  "description": "i imooc movie website",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "moment": "^2.18.1",
+    "jade": "^1.11.0",
+    "mongoose": "^4.9.9",
+    "pug": "^2.0.0-rc.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsb123dsb/node-mogodb_website.git"
+  },
+  "keywords": [
+    "imooc"
+  ],
+  "author": "zhou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dsb123dsb/node-mogodb_website/issues"
+  },
+  "homepage": "https://github.com/dsb123dsb/node-mogodb_website#readme"
+}
