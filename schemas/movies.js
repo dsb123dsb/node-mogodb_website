@@ -1,0 +1,47 @@
+const mongoose = require('mongoose');
+
+const MovieSchema = new mongoose.Schema({
+	doctor: String,
+	title: String,
+	language: String,
+	country: String,
+	summary: String,
+	flash: String,
+	poster: String,
+	year: Number,
+	meta: {// 更新记录的状态记录
+		createAt: {
+			type: Date,
+			default: Date.now()
+		},
+		updateAt: {
+			type: Date,
+			default: Date.now()
+		}
+	}
+});
+// 模式方法，每次调用判断是否是新加的
+MovieSchema.pre('save', (next) => {
+	if(this.isNew){
+		this.meta.createAt = this.meta.updateAt = Date.now();
+	}else{
+		this.updateAt = Date.now();
+	}
+	next();// 存储流程走下去
+});
+// 静态方法
+MovieSchema.statics = {
+	fetch(cb){ // 取出数据库所有数据
+		return this
+			.find({})
+			.sort('meta.updateAt')  // 排序
+			.exec(cb)
+	},
+	findById(id, cb){ // 查询单条数据
+		return this
+			.findOne({_id: id})
+			.exec(cb)
+	}
+};
+
+module.exports = MovieSchema;
