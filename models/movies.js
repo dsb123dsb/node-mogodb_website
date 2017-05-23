@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
 const MovieSchema = require('../schemas/movies');
-const movie = mongoose.model('Moive', MovieSchema);
+const Movie = mongoose.model('Movie', MovieSchema);
 
 module.exports=Movie;

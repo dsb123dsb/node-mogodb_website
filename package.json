@@ -10,6 +10,7 @@
     "moment": "^2.18.1",
     "jade": "^1.11.0",
     "mongoose": "^4.9.9",
+    "underscore": "^1.8.3",
     "pug": "^2.0.0-rc.1"
   },
   "devDependencies": {},
