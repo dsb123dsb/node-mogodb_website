@@ -20,7 +20,7 @@ app.set('view engine', 'pug'); // 设置默认模板引擎pug, 模板文件后�
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));//将表单数据 编码解析,_id 是mongodb的默认主键
 //body-parser不在和express打包在一起，要单独安装 app.use(express.bodyParser()); // 表单数据格式化
-app.use(express.static(path.join(__dirname, 'bower_components'))); // 静态文件
+app.use(express.static(path.join(__dirname, 'public'))); // 静态文件
 app.locals.moment = require('moment');
 app.listen(port); //监听端口
 
@@ -194,4 +194,19 @@ app.get('/admin/list', (req, res) => {
 		});
 
 	});
+});
+
+// list delete movie
+app.delete('/admin/list', (req, res) => {
+	var id = req.query.id;
+
+	if(id){
+		Movie.remove({_id: id}, (err, movie) => {
+			if(err){
+				console.log(err);
+			}else{
+				res.json({success: 1});
+			}
+		});
+	}
 });

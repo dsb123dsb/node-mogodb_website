@@ -1,0 +1,25 @@
+{
+  "name": "imoocz",
+  "description": "i imooc movie website",
+  "main": "app.js",
+  "authors": [
+    "zhou"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "movie"
+  ],
+  "homepage": "https://github.com/dsb123dsb/node-mogodb_website",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
