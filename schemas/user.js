@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt'); // 密码加盐
-const SALT_WoRK_FACTOR = 10;
+const SALT_WORK_FACTOR = 10;
 
 const UserSchema = new mongoose.Schema({
 	name:{
@@ -28,7 +28,7 @@ UserSchema.pre('save', (next) => {
 		this.updateAt = Date.now();
 	}
 	// 对hash后的密码加盐，并且重新复制给passwork
-	bcrypt.genSaltt(SALT_WoRK_FACTOR, (err,salt)=>{
+	bcrypt.genSaltt(SALT_WORK_FACTOR, (err,salt)=>{
 		if(err)return next(err);
 
 		bcrypt.hash(user.password,salt,(err,hash)=>{
