@@ -41,12 +41,23 @@ app.listen(port); //监听端口
 
 console.log('website started on port '+ port); // 监听成功打印信息
 
+// pre handle user
+app.use((req, res,next)=>{
+	let _user = req.session.user; // 从session读取y用户
+
+	if(_user){
+		app.locals.user = _user;
+	}
+	return next()	
+});
+
 //路由编写 
 
 // index page
 app.get('/', (req, res) => {
 	console.log('user in session');
 	console.log(req.session.user);
+
 	Movie.fetch((err, movies) => {
 		if(err){
 			console.log(err);
@@ -151,6 +162,13 @@ app.post('/user/signin', (req,res)=>{
 			}
 		});
 	});
+});
+
+// logout
+app.get('/logout',(req,res)=>{
+	delete req.session.user;
+	delete app.locals.user
+	res.redirect('/');
 })
 // userlist page
 app.get('/user/userlist', (req, res) => {
