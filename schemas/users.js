@@ -39,6 +39,16 @@ UserSchema.pre('save', function(next){ // 箭头函数this指向有问题，空�
 		});
 	});
 });
+// 实例方法
+UserSchema.methods={
+	comparePassword:function(_password,cb){
+		bcrypt.compare(_password,this.password,function(err, isMatch){
+			if(err)return cb(err);
+
+			cb(null, isMatch);
+		});
+	}
+};
 // 静态方法
 UserSchema.statics = {
 	fetch(cb){ // 取出数据库所有数据

@@ -108,6 +108,33 @@ app.post('/user/signup',(req, res)=>{
 
 })
 
+// signin
+app.post('/user/signin', (req,res)=>{
+	let _user= req.body.user;
+	let name = _user.name;
+	let password = _user.password;
+
+	User.findOne({name:name}, (err,user)=>{
+		if(err){
+			console.log(err);
+		}
+		if(!user){
+			return res.redirect('/');
+		}
+		// compare password
+		user.comparePassword(password, (err, isMatched)=>{
+			if(err){
+				console.log(err);
+			}
+			if(isMatched){
+				console.log("Password is matched");
+				return	res.redirect('/');
+			}else{
+				console.log("Password is not matched");
+			}
+		});
+	});
+})
 // userlist page
 app.get('/user/userlist', (req, res) => {
 	User.fetch((err ,users) => {
