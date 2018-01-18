@@ -9,6 +9,7 @@ const path = require('path');  // 设置路径
 const mongoose = require('mongoose');
 const _underscore = require('underscore');
 const Movie = require('./models/movies');
+const User = require('./models/users');
 const port = process.env.PORT || 3000; // 设置端口号，默认3000，process为全局变量，命令PORT=4000 node app.js传入 并启动
 const app = express(); //启动一个服务器
 
@@ -21,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));//将表单数据 编码解析,_id 是mongodb的默认主键
 //body-parser不在和express打包在一起，要单独安装 app.use(express.bodyParser()); // 表单数据格式化
 app.use(express.static(path.join(__dirname, 'public'))); // 静态文件
-app.locals.moment = require('moment');
+app.locals.moment = require('moment'); // locals的本地变量。模板可直接使用
 app.listen(port); //监听端口
 
 console.log('website started on port '+ port); // 监听成功打印信息
@@ -75,6 +76,49 @@ app.get('/', (req, res) => {
 			}
 			]*/
 		});
+	});
+});
+
+// singn up
+app.post('/user/signup',(req, res)=>{
+	let _user = req.body.user;
+	// /user/signup/:useerId?useerId=1122;
+	// 三种获取userId，1.req.params.userid, 2.req.body.userid 3.req.query.useerid,  若直接使用req.param('userid'),会从123按顺序找
+
+	// 查找是或否用户名已存在
+	User.find({name:_user.name}, (err, user)=>{ // find返回的是数组
+		if(err){
+			console.log(err);
+		}
+		if(user&&user.length){
+			return res.redirect('/');
+		}
+		else{
+			let user = new User(_user);
+			user.save((err, user)=>{
+				if(err){
+					console.log(err);
+				}else{
+					console.log(user);
+					res.redirect('/user/userlist');
+				}
+			})	
+		}
+	})
+
+})
+
+// userlist page
+app.get('/user/userlist', (req, res) => {
+	User.fetch((err ,users) => {
+		if(err){
+			console.log(err);
+		}
+		res.render('userlist', {
+			title: 'zhou\'site user列表页',
+			users: users
+		});
+
 	});
 });
 
@@ -175,7 +219,7 @@ app.post('/admin/movie/new', (req, res) => {
 	}
 });
 
-//列表页list
+//moive列表页list
 app.get('/admin/list', (req, res) => {
 	Movie.fetch((err ,movies) => {
 		if(err){

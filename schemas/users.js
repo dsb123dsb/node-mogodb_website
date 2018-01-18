@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
 	}
 });
 // 模式方法，每次调用判断是否是新加的
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function(next){ // 箭头函数this指向有问题，空对象
 	let user = this;
 	if(this.isNew){
 		this.meta.createAt = this.meta.updateAt = Date.now();
@@ -28,17 +28,16 @@ UserSchema.pre('save', (next) => {
 		this.updateAt = Date.now();
 	}
 	// 对hash后的密码加盐，并且重新复制给passwork
-	bcrypt.genSaltt(SALT_WORK_FACTOR, (err,salt)=>{
-		if(err)return next(err);
+	bcrypt.genSalt(SALT_WORK_FACTOR, (err,salt)=>{
+		if(err) return next(err);
 
-		bcrypt.hash(user.password,salt,(err,hash)=>{
-			if(err)return next(err);
+		bcrypt.hash(user.password, salt, (err,hash)=>{
+			if(err) return next(err);
 
 			user.password=hash;
-			next();
+			next();// 存储流程走下去
 		});
 	});
-	next();// 存储流程走下去
 });
 // 静态方法
 UserSchema.statics = {
