@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const mongoStore = require('connect-mongo')(session);
 
+const logger = require('morgan'); //日志模块 
+
 const path = require('path');  // 设置路径
 const mongoose = require('mongoose');
 
@@ -32,6 +34,14 @@ app.use(session({ // 设置session
 		collection: 'session'
 	})
 }));
+
+// 判断是否是开发环境，是的话打印日志和增肌可读性
+if('development' === app.get('env')){ // process.env.NODE_ENV === 'development'
+	app.set('showStackError', true);
+	app.use(logger(':method :url :status'));
+	app.locals.pretty=true;
+	mongoose.set('debug', true);
+}
 
 require('./config/routes')(app);
 
