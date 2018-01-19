@@ -1,6 +1,18 @@
 const User = require('../models/users');
 
-// singn up
+// showSignup page
+exports.showSignup = function(req,res){
+	res.render('signup', {
+		title: '注册页面'
+	});
+};
+// showSignin page
+exports.showSignin = function(req,res){
+	res.render('signin', {
+		title: '登陆页面'
+	});
+};
+// singn up 注册
 exports.signup = function(req, res){
 	let _user = req.body.user;
 	// /user/signup/:useerId?useerId=1122;
@@ -12,7 +24,7 @@ exports.signup = function(req, res){
 			console.log(err);
 		}
 		if(user&&user.length){
-			return res.redirect('/');
+			return res.redirect('/signin');
 		}
 		else{
 			let user = new User(_user);
@@ -21,7 +33,7 @@ exports.signup = function(req, res){
 					console.log(err);
 				}else{
 					console.log(user);
-					res.redirect('/user/userlist');
+					res.redirect('/');
 				}
 			})	
 		}
@@ -29,7 +41,7 @@ exports.signup = function(req, res){
 
 };
 
-// signin
+// signin 登陆
 exports.signin = function(req,res){
 	let _user= req.body.user;
 	let name = _user.name;
@@ -40,7 +52,7 @@ exports.signin = function(req,res){
 			console.log(err);
 		}
 		if(!user){
-			return res.redirect('/');
+			return res.redirect('/signup');
 		}
 		// compare password
 		user.comparePassword(password, (err, isMatched)=>{
@@ -52,6 +64,7 @@ exports.signin = function(req,res){
 				// console.log("Password is matched");
 				return	res.redirect('/');
 			}else{
+				return res.redirect('/signin');
 				console.log("Password is not matched");
 			}
 		});
@@ -64,7 +77,7 @@ exports.logout = function(req,res){
 	// delete app.locals.user
 	res.redirect('/');
 };
-	// userlist page
+// userlist page
 exports.userlist = function(req,res){
 	User.fetch((err ,users) => {
 		if(err){
