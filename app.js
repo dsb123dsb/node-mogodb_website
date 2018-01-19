@@ -21,7 +21,7 @@ const dbURL = 'mongodb://localhost/node-mongodb_website';
 
 mongoose.connect(dbURL);
 
-app.set('views', './views/pages'); // 设置视图默认目录
+app.set('views', './app/views/pages'); // 设置视图默认目录
 
 app.set('view engine', 'pug'); // 设置默认模板引擎pug, 模板文件后缀保持统一
 app.use(bodyParser.json());
