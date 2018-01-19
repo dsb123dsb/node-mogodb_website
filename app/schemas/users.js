@@ -8,6 +8,12 @@ const UserSchema = new mongoose.Schema({
 		unique:true
 	},
 	password:String,
+
+	// 0:normal user; 1:verifieed user; 2:professional user; >10:admmin; >50:super admin
+	role:{
+		type:Number, // use node-mongodb_website; db.users.update({"_id": ObjectId("")}, {$set:{role:51}}); db.users.find({})
+		default:0
+	},
 	meta: {// 更新记录的状态记录
 		createAt: {
 			type: Date,

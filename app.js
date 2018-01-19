@@ -17,7 +17,7 @@ const mongoose = require('mongoose');
 
 const port = process.env.PORT || 3000; // 设置端口号，默认3000，process为全局变量，命令PORT=4000 node app.js传入 并启动
 const app = express(); //启动一个服务器
-const dbURL = 'mongodb://localhost/node-mongodb_website';
+const dbURL = 'mongodb://localhost/node-mongodb_website'; // 连接数据库
 
 mongoose.connect(dbURL);
 

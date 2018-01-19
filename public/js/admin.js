@@ -7,7 +7,7 @@ $(() => {
 
 		$.ajax({
 			type: 'DELETE',
-			url: '/admin/list?id='+id // 异步请求类型：删除
+			url: '/admin/movie/list?id='+id // 异步请求类型：删除
 		})
 		.done((results) => {
 			if(results.success ===1) {

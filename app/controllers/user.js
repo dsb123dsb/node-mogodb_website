@@ -78,7 +78,7 @@ exports.logout = function(req,res){
 	res.redirect('/');
 };
 // userlist page
-exports.userlist = function(req,res){
+exports.list = function(req,res){
 	User.fetch((err ,users) => {
 		if(err){
 			console.log(err);
@@ -89,4 +89,23 @@ exports.userlist = function(req,res){
 		});
 
 	});
+};
+
+// middware for user
+exports.signinRequired = function(req,res,next){
+	let user = req.session.user;
+
+	if(!user){
+		return res.redirect('/signin');
+	}
+	next();
+};
+// middware for admin
+exports.adminRequired = function(req,res,next){
+	let user = req.session.user;
+
+	if(user.role<=10 || !user.role){
+		return res.redirect('/signin');
+	}
+	next();
 };
