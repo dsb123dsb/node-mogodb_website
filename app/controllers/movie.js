@@ -1,24 +1,33 @@
 const Movie = require('../models/movies');
+const Comment = require('../models/comment');
 const _underscore = require('underscore');
 
 // 详情页
 exports.detail = function(req, res){
-	var id = req.params.id;
+	let id = req.params.id;
 
-	Movie.findById(id, (err, movie) => {
-		res.render('detail', {
-			title: 'zhou\'site: ' + movie.title, // 'Movie ' + movie.title + ' 详情',
-			movie: movie
-			/*movie: {
-				doctor: 'zhou',
-				country: 'china',
-				title: 'hehhe',
-				year: 2014,
-				flash: 'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
-				language: 'chinese',
-				summary: 'dwhduwhduwhdwd氮化物氮化物氮化物氮化物'
-			}*/
+	Movie.findById(id, (err, movie) => { // 根据Movie查评论
+		Comment
+			.find({movie: id})
+			.populate('from', 'name') // 根据from去USer表查name
+			.exec((err, comments)=>{
+				// console.log(comments)
+				res.render('detail', {
+					title: 'zhou\'site: ' + movie.title, // 'Movie ' + movie.title + ' 详情',
+					movie: movie,
+					comments: comments
+					/*movie: {
+						doctor: 'zhou',
+						country: 'china',
+						title: 'hehhe',
+						year: 2014,
+						flash: 'http://player.youku.com/player.php/sid/XNjA1Njc0NTUy/v.swf',
+						language: 'chinese',
+						summary: 'dwhduwhduwhdwd氮化物氮化物氮化物氮化物'
+					}*/
+				});		
 		});
+
 	});
 };
 //后台录入页admin 

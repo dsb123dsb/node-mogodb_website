@@ -5,17 +5,31 @@ block content
 		.row
 			.col-md-7
 				embed(src=movie.flash, allowFullScreen="true", quality="high", width="720", height="600", align="middle", type="application/x-shockwave-flash")
+				ul.media-list
+					each item in comments
+						//- 多种写法
+						- var aa = item.content;
+						li.media
+							p= item.content + ": "+ item.from.name 
+							//- span #{item.content} #{aa}
+				form(method="POST", action="/user/comment")
+					input(type="hidden", name="comment[movie]", value = movie._id)
+						//- 直接使用movie._id。不用#{}这种
+					input(type="hidden", name="comment[from]", value = user._id)
+					.form-group
+						textarea.form-control(name = "comment[content]" row="3")
+					button.btn.btn-primary(type="submit") 提交
 			.col-md-5
 				dl.dl-horizontal
 					dt 电影名字
-					dd=movie.title
+					dd #{movie.title}
 					dt 导演
-					dd=movie.doctor
+					dd= movie.doctor
 					dt 国家
-					dd=movie.country
+					dd= movie.country
 					dt 语言
-					dd=movie.language
+					dd= movie.language
 					dt 上映年份
-					dd=movie.language
+					dd= movie.language
 					dt 简介
-					dd=movie.summary
+					dd= movie.summary
