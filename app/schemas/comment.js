@@ -5,7 +5,11 @@ let ObjectId = Schema.Types.ObjectId; // 不是很懂,主键 ObjectId
 const CommentSchema = new Schema({
 	movie: {type: ObjectId, ref: 'Movie'},
 	from: {type: ObjectId, ref: 'User'},
-	to: {type: ObjectId, ref: 'User'},
+	reply: [{ // 此条评论楼层内叠加的评论
+		from: {type: ObjectId, ref: 'User'},
+		to: {type: ObjectId, ref: 'User'},
+		content: String
+	}],
 	content: String,
 	meta: {// 更新记录的状态记录
 		createAt: {

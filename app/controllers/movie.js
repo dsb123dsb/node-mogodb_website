@@ -10,8 +10,9 @@ exports.detail = function(req, res){
 		Comment
 			.find({movie: id})
 			.populate('from', 'name') // 根据from去USer表查name
+			.populate('reply.from reply.to', 'name')
 			.exec((err, comments)=>{
-				// console.log(comments)
+				// console.log(comments);
 				res.render('detail', {
 					title: 'zhou\'site: ' + movie.title, // 'Movie ' + movie.title + ' 详情',
 					movie: movie,
