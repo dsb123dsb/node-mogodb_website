@@ -1,5 +1,6 @@
 const Movie = require('../models/movies');
 const Comment = require('../models/comment');
+const Category = require('../models/category');
 const _underscore = require('underscore');
 
 // 详情页
@@ -33,20 +34,15 @@ exports.detail = function(req, res){
 };
 //后台录入页admin 
 exports.new = function(req, res){
-	res.render('admin', {
-		title: 'immoc 后台录入页',
-		movie: {
-			title: '',
-			doctor: '',
-			country: '',
-			year: '',
-			poster: '',
-			flash: '',
-			summary: '',
-			language: ''
-
-		}
+	Category.find({}, (err, categories)=>{
+		// console.log(categories);
+		res.render('admin', {
+			title: 'immoc 后台录入页',
+			categories: categories,
+			movie: {}
+		});		
 	});
+
 };
 
 // admin update movie
@@ -54,10 +50,13 @@ exports.update = function(req, res){
 	var id = req.params.id;
 
 	if(id){
-		Movie.findById(id, (err, movie) => {
-			res.render('admin', {
-				titel: 'zhouSite 后台更新页',
-				movie: movie
+		Category.find({}, (err, categories)=>{	
+			Movie.findById(id, (err, movie) => {
+				res.render('admin', {
+					titel: 'zhouSite 后台更新页',
+					movie: movie,
+					categories: categories
+				});
 			});
 		});
 	}
@@ -65,13 +64,13 @@ exports.update = function(req, res){
 
 // admin post movie
 exports.save = function(req, res){
-	console.log('body:', req.body);
-	var id = req.body.movie._id;
-	console.log('id: ', id);
-	var movieObj = req.body.movie;
+	// console.log('body:', req.body);
+	let id = req.body.movie._id;
+	// console.log('id: ', id);
+	let movieObj = req.body.movie;
 	var _movie;
 
-	if(id !=='') { // 根据报错排查问题'Cast to ObjectId failed for value "" at path "_id" for model "Movie"'
+	if(id) { // 根据报错排查问题'Cast to ObjectId failed for value "" at path "_id" for model "Movie"'
 		Movie.findById(id, (err ,movie) => {
 			if(err){
 				console.log(err);
@@ -87,23 +86,23 @@ exports.save = function(req, res){
 			});
 		});
 	}else{
-		_movie = new Movie({
-			doctor: movieObj.doctor,
-			title: movieObj.title,
-			country: movieObj.country,
-			language: movieObj.language,
-			year: movieObj.year,
-			poster: movieObj.poster,
-			summary: movieObj.summary,
-			flash: movieObj.flash,
-		});
+		_movie = new Movie(movieObj); // 不能给有_id的对象new，会报错castId，bug
+		// console.log(_movie);
+		// console.log(movieObj);
+		let categoryId = _movie.category;
 
 		_movie.save((err, movie) => {
 			if(err){
 				console.log(err);
 			}
-
-			res.redirect('/movie/' + movie._id);
+			Category.findById(categoryId, (err, category)=>{
+				// console.log(category);
+				category.movies.push(movie._id);
+				category.save((err, category)=>{
+					res.redirect('/movie/' + movie._id);
+				});
+			});
+			
 		});
 	}
 };

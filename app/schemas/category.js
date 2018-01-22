@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let ObjectId = Schema.Types.ObjectId; // 不是很懂,主键 ObjectId
 
-const CatetorySchema = new Schema({
+const CategorySchema = new Schema({
 	name: String,
 	movies: [{type: ObjectId, ref: 'Movie'}],
 	meta: {// 更新记录的状态记录
@@ -17,7 +17,7 @@ const CatetorySchema = new Schema({
 	}
 });
 // 模式方法，每次调用判断是否是新加的
-CatetorySchema.pre('save', (next) => {
+CategorySchema.pre('save', (next) => {
 	if(this.isNew){
 		this.meta.createAt = this.meta.updateAt = Date.now();
 	}else{
@@ -26,7 +26,7 @@ CatetorySchema.pre('save', (next) => {
 	next();// 存储流程走下去
 });
 // 静态方法
-CatetorySchema.statics = {
+CategorySchema.statics = {
 	fetch(cb){ // 取出数据库所有数据
 		return this
 			.find({})
@@ -40,4 +40,4 @@ CatetorySchema.statics = {
 	}
 };
 
-module.exports = CatetorySchema;
+module.exports = CategorySchema;

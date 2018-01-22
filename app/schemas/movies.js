@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
+let ObjectId = Schema.Types.ObjectId;
 
-const MovieSchema = new mongoose.Schema({
+const MovieSchema = new Schema({
 	doctor: String,
 	title: String,
 	language: String,
@@ -9,6 +11,10 @@ const MovieSchema = new mongoose.Schema({
 	flash: String,
 	poster: String,
 	year: Number,
+	category: {
+		type: ObjectId,
+		ref: 'Category'
+	}, // Object类型
 	meta: {// 更新记录的状态记录
 		createAt: {
 			type: Date,
