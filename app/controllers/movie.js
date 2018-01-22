@@ -95,6 +95,7 @@ exports.save = function(req, res){
 			if(err){
 				console.log(err);
 			}
+			// 分类只能先查一个，多个不能用findById,会是数组
 			Category.findById(categoryId, (err, category)=>{
 				// console.log(category);
 				category.movies.push(movie._id);
