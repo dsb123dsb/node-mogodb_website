@@ -32,33 +32,56 @@ exports.index = function(req, res){
 // search page
 exports.search = function(req, res){
 	let catId = req.query.cat;
-	let page = parseInt(req.query.p, 10) || 0;
+	let q = req.query.q;
+	let page = parseInt(req.query.p, 10) || 0; // 没传默认0
 	let index = page*2;
 
-	Category
-		.find({_id: catId})
-		.populate({
-			path: 'movies',
-			select: 'title poster'
-			// options: {limit: 2, skip: index}
-		})
-		.exec((err, categories)=>{
-			if(err){
-				console.log(err);
-			}
-			let category = categories[0] || {};
-			let movies =category.movies || [];
-			let results = movies.slice(index, index + 2)
-			// console.log(movies)
-			res.render('results', { // 返回首页
-				title: '结果列表页面',// 传递参数，替代占位符
-				keyword: category.name,
-				movies: results,
-				currentPage: (page + 1),
-				totalPage: Math.ceil(movies.length/2),
-				query: 'cat='+catId
+	if(catId){
+		Category
+			.find({_id: catId})
+			.populate({
+				path: 'movies',
+				select: 'title poster'
+				// options: {limit: 2, skip: index}
+			})
+			.exec((err, categories)=>{
+				if(err){
+					console.log(err);
+				}
+				let category = categories[0] || {};
+				let movies =category.movies || [];
+				let results = movies.slice(index, index + 2)
+				// console.log(movies)
+				res.render('results', { // 返回首页
+					title: '结果列表页面',// 传递参数，替代占位符
+					keyword: category.name,
+					movies: results,
+					currentPage: (page + 1),
+					totalPage: Math.ceil(movies.length/2),
+					query: 'cat='+catId
+				});
 			});
-		});
+	}else{
+		Movie
+			.find({title: new RegExp((q+'.*'),'i')})
+			.exec((err, movies)=>{
+				if(err){
+					console.log(err);
+				}
+
+				let results = movies.slice(index, index + 2);
+
+				// console.log(movies)
+				res.render('results', { // 返回首页
+					title: '结果列表页面',// 传递参数，替代占位符
+					keyword: q,
+					movies: results,
+					currentPage: (page + 1),
+					totalPage: Math.ceil(movies.length/2),
+					query: 'q='+q
+				});
+			});
+	}
 };
 
 // app.get('/', (req, res) => {
