@@ -1,7 +1,8 @@
 const Movie = require('../models/movies');
 const Category = require('../models/category');
+
 // index page
-exports.index = function(req,res){
+exports.index = function(req, res){
 	// console.log('user in session');
 	// console.log(req.session.user);
 
@@ -27,6 +28,39 @@ exports.index = function(req,res){
 			});
 	});
 };
+
+// search page
+exports.search = function(req, res){
+	let catId = req.query.cat;
+	let page = parseInt(req.query.p, 10) || 0;
+	let index = page*2;
+
+	Category
+		.find({_id: catId})
+		.populate({
+			path: 'movies',
+			select: 'title poster'
+			// options: {limit: 2, skip: index}
+		})
+		.exec((err, categories)=>{
+			if(err){
+				console.log(err);
+			}
+			let category = categories[0] || {};
+			let movies =category.movies || [];
+			let results = movies.slice(index, index + 2)
+			// console.log(movies)
+			res.render('results', { // 返回首页
+				title: '结果列表页面',// 传递参数，替代占位符
+				keyword: category.name,
+				movies: results,
+				currentPage: (page + 1),
+				totalPage: Math.ceil(movies.length/2),
+				query: 'cat='+catId
+			});
+		});
+};
+
 // app.get('/', (req, res) => {
 
 // });
