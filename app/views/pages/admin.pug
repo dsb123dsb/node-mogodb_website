@@ -3,7 +3,8 @@ extend ../layout
 block content
 	.container
 		.row
-			form.form-horizontal(method="post", action="/admin/movie" style='margin-bottom: 60px;')
+			//- enctype="multipart/form-data" 是数据分割支持多种数据上传
+			form.form-horizontal(method="post", action="/admin/movie" style='margin-bottom: 60px;', enctype="multipart/form-data")
 				.form-group
 					label.col-sm-3.control-label(for="inputCategory") 豆瓣同步
 					.col-sm-9
@@ -44,6 +45,10 @@ block content
 					label.col-sm-3.control-label(for="inputPoster") 海报地址
 					.col-sm-9
 						input#inputPoster.form-control(type="text", name='movie[poster]', value=movie.poster)
+				.form-group
+					label.col-sm-3.control-label(for="uploadPoster") 海报上传
+					.col-sm-9
+						input#uploadPoster.form-control(type="file", name='uploadPoster')
 				.form-group
 					label.col-sm-3.control-label(for="inputFlash") 片源地址
 					.col-sm-9

@@ -27,6 +27,7 @@ app.set('view engine', 'pug'); // 设置默认模板引擎pug, 模板文件后�
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));//将表单数据 编码解析,_id 是mongodb的默认主键
 app.use(cookieParser()); // cookie中间件，现在需要单独安装cookie-parser,session使用
+// app.use(multer);
 app.use(session({ // 设置session
 	secret:'imooc',
 	store: new mongoStore({ // 持久化，重启session也在

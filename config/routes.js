@@ -3,6 +3,8 @@ const User = require('../app/controllers/user');
 const Movie = require('../app/controllers/movie');
 const Comment = require('../app/controllers/comment');
 const Category = require('../app/controllers/category');
+const multipart = require('connect-multiparty');
+let multipartMiddleware = multipart();
 
 module.exports = function(app){
 	// pre handle user
@@ -30,7 +32,7 @@ module.exports = function(app){
 	app.get('/movie/:id', Movie.detail);
 	app.get('/admin/movie/new', User.signinRequired, User.adminRequired, Movie.new);
 	app.get('/admin/movie/update/:id', User.signinRequired, User.adminRequired, Movie.update);
-	app.post('/admin/movie',User.signinRequired, User.adminRequired, Movie.save);
+	app.post('/admin/movie', multipartMiddleware, User.signinRequired, User.adminRequired, Movie.savePoster, Movie.save);
 	app.get('/admin/movie/list',User.signinRequired, User.adminRequired, Movie.list);
 	app.delete('/admin/movie/list',User.signinRequired, User.adminRequired, Movie.del);	
 	// Comment

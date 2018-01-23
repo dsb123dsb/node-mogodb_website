@@ -2,6 +2,8 @@ const Movie = require('../models/movies');
 const Comment = require('../models/comment');
 const Category = require('../models/category');
 const _underscore = require('underscore');
+const fs = require('fs');
+const path = require('path');
 
 // 详情页
 exports.detail = function(req, res){
@@ -62,6 +64,29 @@ exports.update = function(req, res){
 	}
 };
 
+// admin poster
+exports.savePoster = function(req, res, next){
+	let posterData = req.files.uploadPoster;
+	let filePath = posterData.path;
+	let originalFilename = posterData.originalFilename;
+	// console.log(req.files);中间件生成
+	if(originalFilename){
+		fs.readFile(filePath, (err, data)=>{
+			let timestamp = Date.now();
+			let type = posterData.type.split('/')[1];
+			let poster = timestamp+'.'+type;
+			let newPath = path.join(__dirname, '../../', '/public/upload/'+poster);
+			fs.writeFile(newPath, data, function(err){
+				req.poster = poster;
+				next();
+			});
+
+		});
+	}else{
+		next();
+	}
+};
+
 // admin post movie
 exports.save = function(req, res){
 	// console.log('body:', req.body);
@@ -69,6 +94,10 @@ exports.save = function(req, res){
 	// console.log('id: ', id);
 	let movieObj = req.body.movie;
 	var _movie;
+
+	if(req.poster){
+		movieObj.poster = req.poster;
+	};
 
 	if(id) { // 根据报错排查问题'Cast to ObjectId failed for value "" at path "_id" for model "Movie"'
 		Movie.findById(id, (err ,movie) => {
