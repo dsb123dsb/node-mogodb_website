@@ -89,20 +89,36 @@ exports.save = function(req, res){
 		_movie = new Movie(movieObj); // 不能给有_id的对象new，会报错castId，bug
 		// console.log(_movie);
 		// console.log(movieObj);
-		let categoryId = _movie.category;
+		let categoryId = movieObj.category;
+		let categoryName = movieObj.categoryName;
 
 		_movie.save((err, movie) => {
 			if(err){
 				console.log(err);
 			}
-			// 分类只能先查一个，多个不能用findById,会是数组
-			Category.findById(categoryId, (err, category)=>{
-				// console.log(category);
-				category.movies.push(movie._id);
-				category.save((err, category)=>{
-					res.redirect('/movie/' + movie._id);
-				});
-			});
+
+			if(categoryId){
+				// 分类只能先查一个，多个不能用findById,会是数组
+				Category.findById(categoryId, (err, category)=>{
+					// console.log(category);
+					category.movies.push(movie._id);
+					category.save((err, category)=>{
+						res.redirect('/movie/' + movie._id);
+					});
+				});	
+			}else if(categoryName){
+					let category = new Category({
+						name: categoryName,
+						movies: [movie._id]
+					});
+
+					category.save((err ,category)=>{
+						movie.category = category._id;
+						movie.save((err, movie)=>{
+							res.redirect('/movie/' + movie._id);
+						});
+					});
+			}
 			
 		});
 	}
