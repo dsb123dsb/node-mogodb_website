@@ -9,6 +9,11 @@ const path = require('path');
 exports.detail = function(req, res){
 	let id = req.params.id;
 
+	Movie.update({_id: id}, {$inc: {pv:1}}, function(err){
+		if(err){
+			console.log(err);
+		}
+	});
 	Movie.findById(id, (err, movie) => { // 根据Movie查评论
 		Comment
 			.find({movie: id})

@@ -4,6 +4,7 @@
  */
 
 const express = require('express');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 // 用户状态持久化三个模块
 const cookieParser = require('cookie-parser');
@@ -20,6 +21,25 @@ const app = express(); //启动一个服务器
 const dbURL = 'mongodb://localhost/node-mongodb_website'; // 连接数据库
 
 mongoose.connect(dbURL);
+
+// models loading
+let model_path = __dirname + '/app/models';
+let walk = function(path){
+	fs
+		.readdirSync(path)
+		.forEach(function(file){
+			let newPath = path + '/' + file;
+			let stat = fs.statSync(newPath);
+
+			if(stat.isFile()){
+				if(new RegExp('/(.*)\.(js|coffee)/').test(file)){
+					require(newPath);
+				}
+			} else if(stat.isDirectory()){
+				walk(newPath);
+			}
+		})
+}
 
 app.set('views', './app/views/pages'); // 设置视图默认目录
 
