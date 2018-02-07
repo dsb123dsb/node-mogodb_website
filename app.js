@@ -39,8 +39,9 @@ let walk = function(path){
 			} else if(stat.isDirectory()){
 				walk(newPath);
 			}
-		})
-}
+		});
+};
+walk(model_path);
 
 app.set('views', './app/views/pages'); // 设置视图默认目录
 
